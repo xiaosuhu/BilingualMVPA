@@ -1,0 +1,73 @@
+function [ACC, C] = ECOCAnalysis_hbo_lefthemi_frontalch(SubjStats)
+% Only Easy and Control conditions are selected for classification
+
+% for i=1:length(SubjStats)
+%     disp(SubjStats(i).description);
+% end
+%% Form up the feature matrix for machine learning algorithm
+TRAIN_Y={'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT'}';
+
+% weighttaskcont=[0.3*ones(32,1); 0.6*ones(16,1)];
+
+TRAIN_X=[];
+% Easy
+for i=1:4
+    TRAIN_X=[TRAIN_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+% Hard
+for i=5:8
+    TRAIN_X=[TRAIN_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+% Control
+for i=9:12
+    TRAIN_X=[TRAIN_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+
+mdl=fitcecoc(TRAIN_X,TRAIN_Y);
+
+TEST_Y={'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'EASY','EASY','EASY','EASY',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'HARD','HARD','HARD','HARD',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT',...
+    'CONT','CONT','CONT','CONT'}';
+
+TEST_X=[];
+% Easy
+for i=13:16
+    TEST_X=[TEST_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+% Hard
+for i=17:20
+    TEST_X=[TEST_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+% Control
+for i=21:24
+    TEST_X=[TEST_X; SubjStats(i).beta(1:2:19)'; SubjStats(i).beta(end/4+1:2:end/4+19)'; SubjStats(i).beta(end/2+1:2:end/2+19)'; SubjStats(i).beta(3*end/4+1:2:3*end/4+19)'];
+end
+
+% Stardadize 
+PREDICT_Y=predict(mdl,TEST_X);
+
+%% Calculate the ACC and Confusion matrix
+C=confusionmat(PREDICT_Y,TEST_Y);
+ACC=trace(C)/length(TEST_Y);
+
+end
