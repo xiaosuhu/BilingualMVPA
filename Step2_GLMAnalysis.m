@@ -20,8 +20,7 @@ end
 % Applies a canonical GLM to estimate the hemodynamic response for each
 % block (in this case, a block = one trial)
 % Default HRF peak = 6 seconds
-
-% Derivatives ??? 
+% Default no derivatives included
 
 for i=1:length(subdir)
    FirstLevelStats{i}=GLMFirstlevelAnalysis(subdir{i}); 
