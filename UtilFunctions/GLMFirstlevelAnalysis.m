@@ -10,7 +10,7 @@ List{4}.Fs = 2;
 
 % GLM Basis Function
 firstlevelbasis = nirs.design.basis.Canonical();
-firstlevelbasis.incDeriv=1;
+firstlevelbasis.incDeriv=0;
 
 % Hemodynamic Response Peak Time
 firstlevelbasis.peakTime = 6; % peak time determined based on Friederici and Booth papers (insert link)
