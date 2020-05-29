@@ -8,6 +8,11 @@ datadir=uigetdir();
 files=dir(datadir);
 dirFlags=[files.isdir];
 
+% select location for single subject output
+outputdir = uigetdir();
+addpath(outputdir);
+
+
 start=4;
 
 for i=start:length(files)
@@ -20,11 +25,11 @@ end
 % Applies a canonical GLM to estimate the hemodynamic response for each
 % block (in this case, a block = one trial)
 % Default HRF peak = 6 seconds
-
-% Derivatives ??? 
+% Default no derivatives included
 
 for i=1:length(subdir)
    FirstLevelStats{i}=GLMFirstlevelAnalysis(subdir{i}); 
 end
 
-save('FirstlevelStats.m','FirstLevelStats');
+% save single subject statistics to output directory
+save([fullfile(outputdir),'/FirstLevelStats',num2str(i),'.m'], 'FirstLevelStats')
